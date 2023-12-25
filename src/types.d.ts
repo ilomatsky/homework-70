@@ -7,3 +7,7 @@ export interface Contact {
 }
 
 export interface FormData extends Omit<Contact, 'id'> {}
+
+export interface ContactsList {
+  [id: string]: FormData;
+}

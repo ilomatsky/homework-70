@@ -1,8 +1,41 @@
+import {useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {submitForm} from '../../store/contacts/contactsSlice';
 import ButtonSpinner from '../Spinner/ButtonSpinner';
+import {addContact, updateContact} from '../../store/contacts/contactsThunks';
 
-const Form = () => {
+const Form = ({isEdit, existingContact, isLoading}) => {
+  const dispatch = useDispatch();
+  const [contact, setContact] = useState(existingContact);
+
+  const changeContact = (e) => {
+    setContact((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    if (isLoading) return;
+
+    const contactData = {
+      ...contact,
+    };
+
+    dispatch(submitForm(contactData, isEdit));
+  };
+
+  const handleSubmit = () => {
+    if (isEdit) {
+      dispatch(updateContact(contact));
+    } else {
+      dispatch(addContact(contact));
+    }
+  };
+
   return (
-    <form onSubmit={onFormSubmit}>
+    <form onSubmit={handleSubmit}>
       <h4>{isEdit ? 'Edit contact' : 'Add new contact'}</h4>
       <div className="form-group">
         <label htmlFor="name">Name</label>
@@ -12,8 +45,8 @@ const Form = () => {
           name="name"
           id="name"
           className="form-control"
-          value={dish.name}
-          onChange={changeDish}
+          value={contact.name}
+          onChange={changeContact}
         />
       </div>
       <div className="form-group">
@@ -24,8 +57,8 @@ const Form = () => {
           name="phone"
           id="phone"
           className="form-control"
-          value={dish.description}
-          onChange={changeDish}
+          value={contact.phone}
+          onChange={changeContact}
         />
       </div>
       <div className="form-group">
@@ -36,8 +69,8 @@ const Form = () => {
           name="email"
           id="email"
           className="form-control"
-          value={dish.price}
-          onChange={changeDish}
+          value={contact.email}
+          onChange={changeContact}
         />
       </div>
       <div className="form-group">
@@ -48,8 +81,8 @@ const Form = () => {
           name="photo"
           id="photo"
           className="form-control"
-          value={dish.image}
-          onChange={changeDish}
+          value={contact.photo}
+          onChange={changeContact}
         />
       </div>
 
